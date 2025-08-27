@@ -1,12 +1,12 @@
 import { useEffect, useState, useMemo } from "react";
-import { ShoppingCart, Search, ChevronRight, Star } from "lucide-react";
+import { ShoppingCart, Search, Star, Send, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 
-// --- Categories Example ---
 const CATEGORIES = [
   { id: "all", name: "All" },
   { id: "Electronics", name: "Electronics" },
@@ -17,7 +17,6 @@ const CATEGORIES = [
   { id: "Gadgets", name: "Gadgets" },
 ];
 
-// --- Helpers ---
 const formatUSD = (n) => `$${Number(n).toFixed(2)}`;
 
 function useLocalStorage(key, initial) {
@@ -42,6 +41,7 @@ export default function Home() {
   const [query, setQuery] = useState("");
   const [cat, setCat] = useState("all");
   const [cart, setCart] = useLocalStorage("cart", []);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   useEffect(() => {
     fetch("/api/products")
@@ -145,7 +145,7 @@ export default function Home() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
         {filtered.map((p) => (
           <div key={p.id} className="bg-slate-800 rounded p-3 flex flex-col">
-            <img src={p.image} alt={p.name} className="h-40 w-full object-cover rounded mb-2" />
+            <img src={p.image} alt={p.name} className="h-40 w-full object-cover rounded mb-2 cursor-pointer" onClick={() => setSelectedProduct(p)} />
             <h3 className="font-bold">{p.name}</h3>
             <p className="text-slate-300 text-sm">{p.description}</p>
             <div className="flex justify-between items-center mt-2">
@@ -155,6 +155,30 @@ export default function Home() {
           </div>
         ))}
       </div>
+
+      {/* Product Modal */}
+      {selectedProduct && (
+        <Dialog open onOpenChange={(o) => !o && setSelectedProduct(null)}>
+          <DialogContent className="bg-slate-950 border-slate-800 max-w-2xl mx-auto">
+            <DialogHeader>
+              <DialogTitle>{selectedProduct.name}</DialogTitle>
+            </DialogHeader>
+            <img src={selectedProduct.image} alt={selectedProduct.name} className="w-full h-60 object-cover rounded mb-3"/>
+            <p className="text-slate-300">{selectedProduct.description}</p>
+            <div className="flex gap-2 mt-3">
+              <Button onClick={() => addToCart(selectedProduct)} className="flex-1">Add to Cart</Button>
+              {selectedProduct.affiliate && (
+                <a href={selectedProduct.affiliate} target="_blank" rel="noopener noreferrer" className="flex-1">
+                  <Button variant="outline" className="w-full">Buy Now</Button>
+                </a>
+              )}
+            </div>
+            <Button variant="ghost" onClick={() => setSelectedProduct(null)} className="mt-3 w-full">
+              <X /> Close
+            </Button>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
