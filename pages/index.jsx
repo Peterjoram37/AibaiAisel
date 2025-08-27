@@ -1,19 +1,11 @@
-import React, { useMemo, useState, useEffect } from "react";
-import { ShoppingCart, Search, Menu, X, ChevronRight, Star, Trash2, CreditCard, Package, Send } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
++ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/Card";
++ import { Button } from "../components/ui/Button";
++ import { Input } from "../components/ui/Input";
++ import { Badge } from "../components/ui/Badge";
++ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../components/ui/Sheet";
++ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../components/ui/Dialog";
++ import { Tabs, TabsList, TabsTrigger, TabsContent } from "../components/ui/Tabs";
++ import { Separator } from "../components/ui/Separator";
 
 // --- Demo Data (replace with your API later) ---
 const CATEGORIES = [
