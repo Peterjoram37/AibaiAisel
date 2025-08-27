@@ -1,11 +1,11 @@
-+ import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/Card";
-+ import { Button } from "../components/ui/Button";
-+ import { Input } from "../components/ui/Input";
-+ import { Badge } from "../components/ui/Badge";
-+ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../components/ui/Sheet";
-+ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../components/ui/Dialog";
-+ import { Tabs, TabsList, TabsTrigger, TabsContent } from "../components/ui/Tabs";
-+ import { Separator } from "../components/ui/Separator";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/Card";
+import { Button } from "../components/ui/Button";
+import { Input } from "../components/ui/Input";
+import { Badge } from "../components/ui/Badge";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../components/ui/Sheet";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../components/ui/Dialog";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "../components/ui/Tabs";
+import { Separator } from "../components/ui/Separator";
 
 // --- Demo Data (replace with your API later) ---
 const CATEGORIES = [
