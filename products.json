@@ -1,0 +1,29 @@
+[
+  {
+    "id": "p1",
+    "name": "iPhone 15",
+    "category": "Electronics",
+    "description": "Latest Apple smartphone with advanced camera",
+    "price": 999,
+    "image": "https://via.placeholder.com/150",
+    "affiliate": "https://www.amazon.com/dp/B0XXXX"
+  },
+  {
+    "id": "p2",
+    "name": "Samsung Galaxy S23",
+    "category": "Electronics",
+    "description": "High-end Android smartphone",
+    "price": 899,
+    "image": "https://via.placeholder.com/150",
+    "affiliate": "https://www.amazon.com/dp/B0XXXX"
+  },
+  {
+    "id": "p3",
+    "name": "Nike Sneakers",
+    "category": "Fashion",
+    "description": "Comfortable running shoes",
+    "price": 120,
+    "image": "https://via.placeholder.com/150",
+    "affiliate": "https://www.amazon.com/dp/B0XXXX"
+  }
+]
