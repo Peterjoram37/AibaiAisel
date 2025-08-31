@@ -2,7 +2,7 @@
   "name": "AibaiAisel",
   "version": "1.0.0",
   "description": "E-commerce website with admin dashboard",
-  "main": "index.js",
+  "main": "",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -34,3 +34,4 @@
     "typescript": "^5.2.2"
   }
 }
+
