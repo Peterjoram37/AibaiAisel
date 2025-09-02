@@ -1,4 +1,4 @@
-# AIBAI AISEL
+# AibaiMall
 
 A modern e-commerce website with admin dashboard for digital products in Tanzania. Built with Next.js, React, TypeScript, and Tailwind CSS.
 
@@ -25,7 +25,7 @@ A modern e-commerce website with admin dashboard for digital products in Tanzani
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd AibaiAisel
+   cd AibaiMall
    ```
 
 2. **Install dependencies**
@@ -105,8 +105,16 @@ These settings are stored in localStorage and can be updated anytime.
    npm run build
    ```
 
-2. **Deploy to your preferred platform**
-   - Vercel (recommended)
+2. **Static Export (InfinityFree compatible)**
+   ```bash
+   npm run export
+   ```
+   - This generates the static site in the `out` folder.
+   - Upload the contents of `out` to your InfinityFree `htdocs/` directory via File Manager or FTP.
+   - Ensure your domain/subdomain points to the hosting account.
+
+3. **Other Platforms**
+   - Vercel
    - Netlify
    - AWS
    - DigitalOcean
@@ -127,4 +135,4 @@ For support or questions:
 
 ## License
 
-© 2024 AibaiAisel. All rights reserved.
+© 2024 AibaiMall. All rights reserved.

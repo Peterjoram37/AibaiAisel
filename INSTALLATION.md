@@ -1,8 +1,8 @@
-# Installation Guide for AibaiAisel
+# Installation Guide for AibaiMall
 
 ## Prerequisites
 
-Before installing the AibaiAisel, you need to have the following software installed on your computer:
+Before installing the AibaiMall, you need to have the following software installed on your computer:
 
 ### 1. Node.js (Required)
 Download and install Node.js from: https://nodejs.org/
@@ -22,7 +22,7 @@ Download and install Git from: https://git-scm.com/
 
 ### Step 1: Download the Project
 1. Download all the project files to your computer
-2. Extract the files to a folder (e.g., `AibaiAisel`)
+2. Extract the files to a folder (e.g., `AibaiMall`)
 
 ### Step 2: Open Terminal/Command Prompt
 1. **Windows**: Press `Win + R`, type `cmd`, press Enter
@@ -31,12 +31,12 @@ Download and install Git from: https://git-scm.com/
 
 ### Step 3: Navigate to Project Folder
 ```bash
-cd "path/to/AibaiAisel"
+cd "path/to/AibaiMall"
 ```
 
 **Example**:
 ```bash
-cd "C:\Users\PETER JORAM\3D Objects\AibaiAisel"
+cd "C:\Users\PETER JORAM\3D Objects\AibaiMall"
 ```
 
 ### Step 4: Install Dependencies
@@ -53,7 +53,7 @@ npm run dev
 
 You should see output like:
 ```
-> AibaiAisel@1.0.0 dev
+> AibaiMall@1.0.0 dev
 > next dev
 
 - ready started server on 0.0.0.0:3000, url: http://localhost:3000

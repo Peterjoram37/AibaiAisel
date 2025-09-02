@@ -62,6 +62,7 @@ export default function App() {
   const [cat, setCat] = useState("all");
   const [cart, setCart] = useLocalStorage("cart", [] as any[]);
   const [openProduct, setOpenProduct] = useState<any>(null);
+  const [user, setUser] = useState<any>(null);
 
   const items = useMemo(() => {
     return PRODUCTS.filter(p => (cat === "all" || p.category === cat) && p.name.toLowerCase().includes(query.toLowerCase()));
@@ -69,7 +70,23 @@ export default function App() {
 
   const cartTotal = useMemo(() => cart.reduce((s, it) => s + it.price * it.qty, 0), [cart]);
 
+  useEffect(() => {
+    try {
+      const u = localStorage.getItem("userSession");
+      setUser(u ? JSON.parse(u) : null);
+    } catch {}
+  }, []);
+
+  function ensureAuthed() {
+    if (!user) {
+      window.location.href = "/auth/login";
+      return false;
+    }
+    return true;
+  }
+
   function addToCart(p: any, qty = 1){
+    if (!ensureAuthed()) return;
     setCart(prev => {
       const i = prev.findIndex(x => x.id === p.id);
       if(i >= 0){ const cp=[...prev]; cp[i].qty += qty; return cp; }
@@ -90,7 +107,7 @@ export default function App() {
             <div className="w-8 h-8 rounded-xl bg-blue-500/20 grid place-items-center">
               <Package className="w-4 h-4" />
             </div>
-            <span className="font-bold tracking-tight">AibaiAisel</span>
+            <span className="font-bold tracking-tight">AibaiMall</span>
           </div>
 
           <div className="flex-1" />
@@ -144,7 +161,7 @@ export default function App() {
               <div className="flex gap-2 mt-4">
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button className="flex-1 gap-2" disabled={!cart.length}><CreditCard className="w-4 h-4" /> Checkout</Button>
+                    <Button className="flex-1 gap-2" disabled={!cart.length || !user}><CreditCard className="w-4 h-4" /> Checkout</Button>
                   </DialogTrigger>
                   <DialogContent className="bg-slate-950 border-slate-800">
                     <DialogHeader>
@@ -236,7 +253,7 @@ export default function App() {
       <footer className="border-t border-slate-800 py-10">
         <div className="max-w-6xl mx-auto px-4 grid md:grid-cols-4 gap-6 text-sm text-slate-300">
           <div>
-            <p className="font-bold mb-2">AibaiAisel</p>
+            <p className="font-bold mb-2">AibaiMall</p>
             <p className="text-slate-400">Fast digital deliveries for East Africa. Secure, simple, instant.</p>
           </div>
           <div>
@@ -264,7 +281,7 @@ export default function App() {
             </ul>
           </div>
         </div>
-        <p className="text-center text-slate-500 text-xs mt-6">© {new Date().getFullYear()} AibaiAisel. All rights reserved.</p>
+        <p className="text-center text-slate-500 text-xs mt-6">© {new Date().getFullYear()} AibaiMall. All rights reserved.</p>
       </footer>
 
       {/* Product Dialog */}
@@ -307,15 +324,41 @@ function CheckoutForm({ total, onSuccess }: { total: number, onSuccess: () => vo
     method: "mpesa",
     note: "",
   });
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(()=>{
+    try {
+      const u = localStorage.getItem("userSession");
+      setUser(u? JSON.parse(u): null);
+    } catch {}
+  },[]);
 
   async function submit(e: React.FormEvent){
     e.preventDefault();
     setLoading(true);
     // Simulate payment/submit
     setTimeout(()=>{
+      try {
+        const items = JSON.parse(localStorage.getItem("cart") || "[]");
+        const orders = JSON.parse(localStorage.getItem("orders") || "[]");
+        const order = {
+          id: `o${Date.now()}`,
+          userId: user?.id,
+          customer: form.name || user?.username,
+          phone: form.phone || user?.phone,
+          email: form.email || user?.email,
+          location: user?.location,
+          total,
+          status: "pending",
+          createdAt: new Date().toISOString(),
+          items: items.map((it:any)=>({ id: it.id, name: it.name, qty: it.qty, price: it.price }))
+        };
+        localStorage.setItem("orders", JSON.stringify([order, ...orders]));
+      } catch {}
       setLoading(false);
       alert("Order received! Payment instructions sent to WhatsApp/Email.");
       onSuccess?.();
+      try { window.location.href = "/orders"; } catch {}
     }, 900);
   }
 
