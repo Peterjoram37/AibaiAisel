@@ -39,13 +39,7 @@ const mockProducts = [
   { id: "p6", name: "Netflix Gift Card $25", price: 75000, category: "vouchers", stock: 20, sales: 40 },
 ];
 
-const mockOrders = [
-  { id: "o1", customer: "John Doe", phone: "+255 741 123 456", email: "john@example.com", total: 6500, status: "pending", date: "2024-01-15", items: ["Vodacom Airtime", "Airtel Bundles 3GB"] },
-  { id: "o2", customer: "Jane Smith", phone: "+255 742 789 012", email: "jane@example.com", total: 49000, status: "completed", date: "2024-01-14", items: ["DSTV Compact (1 Mo)"] },
-  { id: "o3", customer: "Mike Johnson", phone: "+255 743 345 678", email: "mike@example.com", total: 10000, status: "processing", date: "2024-01-13", items: ["LUKU Token 10k"] },
-  { id: "o4", customer: "Sarah Wilson", phone: "+255 744 901 234", email: "sarah@example.com", total: 35000, status: "completed", date: "2024-01-12", items: ["PlayStation Plus 3 Mo"] },
-  { id: "o5", customer: "David Brown", phone: "+255 745 567 890", email: "david@example.com", total: 75000, status: "pending", date: "2024-01-11", items: ["Netflix Gift Card $25"] },
-];
+const mockOrders: any[] = [];
 
 const mockAnalytics = {
   visitors: 1247,
@@ -57,7 +51,7 @@ const mockAnalytics = {
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const [products, setProducts] = useState(mockProducts);
-  const [orders, setOrders] = useState(mockOrders);
+  const [orders, setOrders] = useState<any[]>(mockOrders);
   const [analytics, setAnalytics] = useState(mockAnalytics);
   const [paymentSettings, setPaymentSettings] = useState({
     mpesaNumber: "+255 753033342",
@@ -82,6 +76,10 @@ export default function AdminDashboard() {
     if (!isLoggedIn) {
       router.push("/admin/login");
     }
+    try {
+      const saved = JSON.parse(localStorage.getItem("orders") || "[]");
+      setOrders(saved);
+    } catch {}
   }, [router]);
 
   const handleLogout = () => {
@@ -119,9 +117,9 @@ export default function AdminDashboard() {
   };
 
   const updateOrderStatus = (id: string, status: string) => {
-    setOrders(orders.map(o => 
-      o.id === id ? { ...o, status } : o
-    ));
+    const updated = orders.map(o => o.id === id ? { ...o, status } : o);
+    setOrders(updated);
+    try { localStorage.setItem("orders", JSON.stringify(updated)); } catch {}
   };
 
   const updatePaymentSettings = () => {
