@@ -28,6 +28,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { getUsers, setUsers, toggleUserVerified } from "@/lib/social";
 
 // Mock data - replace with real API calls
 const mockProducts = [
@@ -59,6 +60,7 @@ export default function AdminDashboard() {
   const [products, setProducts] = useState(mockProducts);
   const [orders, setOrders] = useState(mockOrders);
   const [analytics, setAnalytics] = useState(mockAnalytics);
+  const [users, setUsersState] = useState(getUsers());
   const [paymentSettings, setPaymentSettings] = useState({
     mpesaNumber: "+255 753033342",
     mpesaName: "Peter Sichilima",
@@ -165,6 +167,7 @@ export default function AdminDashboard() {
             <TabsTrigger value="orders">Orders</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
             <TabsTrigger value="payments">Payment Settings</TabsTrigger>
+            <TabsTrigger value="users">Users</TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
@@ -607,6 +610,46 @@ export default function AdminDashboard() {
                   <Settings className="w-4 h-4" />
                   Save Payment Settings
                 </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Users Tab */}
+          <TabsContent value="users" className="space-y-6">
+            <h2 className="text-2xl font-bold">User Management</h2>
+            <Card className="bg-slate-950 border-slate-800">
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-slate-800">
+                        <th className="text-left p-4">Name</th>
+                        <th className="text-left p-4">Username</th>
+                        <th className="text-left p-4">Verified</th>
+                        <th className="text-left p-4">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {users.map(u => (
+                        <tr key={u.id} className="border-b border-slate-800">
+                          <td className="p-4">{u.name}</td>
+                          <td className="p-4">@{u.username}</td>
+                          <td className="p-4">{u.verified ? "Yes" : "No"}</td>
+                          <td className="p-4">
+                            <div className="flex gap-2">
+                              <Button size="sm" variant={u.verified?"outline":"default"} onClick={()=>{
+                                const updated = toggleUserVerified(u.id, !u.verified);
+                                setUsersState(updated);
+                              }}>
+                                {u.verified? "Remove Blue Tick" : "Give Blue Tick"}
+                              </Button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </CardContent>
             </Card>
           </TabsContent>
