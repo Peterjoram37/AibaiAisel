@@ -218,10 +218,11 @@ function renderPost(p) {
   const likeIcon = liked ? 'fa-solid fa-thumbs-up' : 'fa-regular fa-thumbs-up';
   const commentsCount = p.comments || 0;
   const likesCount = p.likes || 0;
+  const displayName = p.authorName || p.userName || p.username || p.userId;
   return `
     <div class="bg-white border rounded-lg p-4 mb-4" id="post-${p.id}">
       <div class="flex items-center justify-between">
-        <div class="font-semibold">User: ${escapeHtml(String(p.userId))}</div>
+        <div class="font-semibold">${escapeHtml(String(displayName))}</div>
         <div class="flex items-center gap-2">
           ${currentUser && currentUser.id!==p.userId ? `<button onclick="followUser('${p.userId}')" class="px-2 py-1 rounded border text-sm">Follow</button>` : ''}
           <div class="text-xs text-gray-500">${new Date(p.createdAt).toLocaleString()}</div>
