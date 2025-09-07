@@ -1,0 +1,75 @@
+[
+  {
+    "id": "p_0001",
+    "userId": "u_0001",
+    "authorName": "Peter",
+    "text": "kwema humu",
+    "media": [],
+    "visibility": "public",
+    "likes": 0,
+    "comments": 0,
+    "createdAt": "2025-09-05 14:51:57",
+    "updatedAt": "2025-09-05 14:51:57"
+  },
+  {
+    "id": "p_0002",
+    "userId": "u_0001",
+    "authorName": "Peter",
+    "text": "kwema humu",
+    "media": [
+      "uploads/media/m_68bb314fcb586.png"
+    ],
+    "visibility": "public",
+    "likes": 0,
+    "comments": 0,
+    "createdAt": "2025-09-05 14:52:07",
+    "updatedAt": "2025-09-05 14:52:07"
+  },
+  {
+    "id": "p_0003",
+    "userId": "u_0002",
+    "authorName": "Asha",
+    "text": "Mtoa huduma wenu nipo hapa!",
+    "media": [
+      "uploads/media/m_68bb32dee782b.jpg"
+    ],
+    "visibility": "public",
+    "likes": 0,
+    "comments": 0,
+    "createdAt": "2025-09-05 14:59:27",
+    "updatedAt": "2025-09-05 14:59:27"
+  },
+  {
+    "id": "p_0004",
+    "userId": "u_0001",
+    "authorName": "Peter",
+    "text": "Ninja mtoto Bongo la movie la kibongo",
+    "media": [],
+    "videoUrl": "https://youtu.be/r7oHflg6R98?si=YCQ3_U2dcRgfQKig",
+    "groupId": null,
+    "visibility": "public",
+    "awardedLikesBlocks": 0,
+    "awardedCommentsBlocks": 0,
+    "likes": 0,
+    "comments": 0,
+    "createdAt": "2025-09-05 16:10:08",
+    "updatedAt": "2025-09-05 16:10:08"
+  },
+  {
+    "id": "p_0005",
+    "userId": "u_0002",
+    "authorName": "Asha",
+    "text": "Hi!",
+    "media": [],
+    "videoUrl": "",
+    "groupId": null,
+    "visibility": "public",
+    "awardedLikesBlocks": 0,
+    "awardedCommentsBlocks": 0,
+    "likes": 0,
+    "comments": 0,
+    "createdAt": "2025-09-06 06:46:18",
+    "updatedAt": "2025-09-06 06:46:18"
+  }
+]
+
