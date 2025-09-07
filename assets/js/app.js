@@ -293,7 +293,7 @@ function escapeHtml(s){return (s||'').toString().replace(/[&<>"']/g,m=>({ '&':'&
 // Verified badge helper
 function verifiedIcon(isVerified){
   if (!isVerified) return '';
-  return ' <i class="fa-solid fa-circle-check text-blue-600" aria-label="verified"></i>';
+  return ' <img src="https://od.lk/s/NzhfNjc2MDk0NDRf/Premium%20Vector%20_%20Verification%20checkmark%20blue%20circle%20star%20vector%20Icon%20isolated%20on%20white%20background.jpg" alt="verified" style="width:14px;height:14px;vertical-align:middle;margin-left:4px;border-radius:9999px;display:inline-block;" />';
 }
 
 function toggleComments(postId){
