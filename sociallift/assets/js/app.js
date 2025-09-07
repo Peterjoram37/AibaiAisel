@@ -215,10 +215,11 @@ function renderPost(p) {
   const video = p.videoUrl ? renderVideo(p.videoUrl) : '';
   const liked = !!p.likedByMe;
   const likeCls = liked ? 'text-blue-600' : 'text-gray-700';
-  const likeIcon = liked ? 'fa-solid fa-thumbs-up' : 'fa-regular fa-thumbs-up';
   const commentsCount = p.comments || 0;
   const likesCount = p.likes || 0;
   const displayName = p.authorName || p.userName || p.username || p.userId;
+  const likeLabel = likesCount > 0 ? `Like (${likesCount})` : 'Like';
+  const commentLabel = commentsCount > 0 ? `Comment (${commentsCount})` : 'Comment';
   return `
     <div class="bg-white border rounded-lg p-4 mb-4" id="post-${p.id}">
       <div class="flex items-center justify-between">
@@ -232,9 +233,9 @@ function renderPost(p) {
       ${video}
       <div class="mt-2 space-y-2">${imgs}</div>
       <div class="mt-3 flex items-center gap-3 text-sm">
-        <button onclick="likePost('${p.id}')" class="px-2 py-1 rounded border flex items-center gap-1 ${likeCls}"><i class="${likeIcon}"></i><span>${likesCount}</span></button>
-        <button onclick="toggleComments('${p.id}')" class="px-2 py-1 rounded border flex items-center gap-1"><i class="fa-regular fa-comment"></i><span>${commentsCount}</span></button>
-        <button onclick="openShare('${p.id}')" class="px-2 py-1 rounded border flex items-center gap-1"><i class="fa-solid fa-share"></i><span>Share</span></button>
+        <button onclick="likePost('${p.id}')" class="px-2 py-1 rounded border ${likeCls}">${likeLabel}</button>
+        <button onclick="toggleComments('${p.id}')" class="px-2 py-1 rounded border">${commentLabel}</button>
+        <button onclick="openShare('${p.id}')" class="px-2 py-1 rounded border">Share</button>
       </div>
       <div id="comments_${p.id}" class="hidden mt-3">
         <div class="flex items-start gap-2">
