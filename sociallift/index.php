@@ -50,6 +50,23 @@
                     <div id="notifEmpty" class="p-3 text-gray-500 text-sm">No notifications yet</div>
                 </div>
             </div>
+            <!-- Auth Buttons / User Menu -->
+            <div class="flex items-center gap-3">
+                <div id="guestActions" class="flex items-center gap-2">
+                    <button id="btnShowLogin" class="px-3 py-1 rounded bg-blue-600 text-white">Login</button>
+                    <button id="btnShowRegister" class="px-3 py-1 rounded border">Register</button>
+                </div>
+                <div id="userMenu" class="hidden relative">
+                    <button onclick="toggleUserDropdown()" class="px-3 py-1 rounded border bg-white">
+                        <span id="userName">User</span>
+                        <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                    </button>
+                    <div id="userDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white border rounded shadow">
+                        <a href="user/dashboard.php" class="block px-4 py-2 hover:bg-gray-50">My Dashboard</a>
+                        <a href="#" onclick="logout()" class="block px-4 py-2 text-red-600 hover:bg-gray-50">Logout</a>
+                    </div>
+                </div>
+            </div>
         </nav>
 
         <!-- Mobile menu button -->
