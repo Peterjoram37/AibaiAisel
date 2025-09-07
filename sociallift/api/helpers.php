@@ -1,84 +1,153 @@
 <?php
-// api/helpers.php - JSON storage helpers for SocialLift
+// api/helpers.php
+session_start();
 
-function sl_data_dir(): string {
-    $dir = __DIR__ . '/data';
-    if (!is_dir($dir)) @mkdir($dir, 0775, true);
-    return $dir;
-}
+function root_dir() { return dirname(__DIR__); }
+function data_dir() { return root_dir() . '/data'; }
+function uploads_dir() { return root_dir() . '/uploads'; }
 
-function sl_path(string $filename): string {
-    return sl_data_dir() . '/' . $filename;
-}
-
-function sl_read_json(string $path): array {
+function read_json($path) {
     if (!file_exists($path)) return [];
-    $raw = @file_get_contents($path);
-    if ($raw === false || $raw === '') return [];
-    $d = json_decode($raw, true);
-    return is_array($d) ? $d : [];
+    $h = fopen($path, 'r');
+    if (!$h) return [];
+    flock($h, LOCK_SH);
+    $content = stream_get_contents($h);
+    flock($h, LOCK_UN);
+    fclose($h);
+    $data = json_decode($content, true);
+    return is_array($data) ? $data : [];
 }
-
-function sl_write_json(string $path, array $data): bool {
-    $fp = fopen($path, 'c+');
-    if (!$fp) return false;
-    flock($fp, LOCK_EX);
-    ftruncate($fp, 0);
-    fwrite($fp, json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES));
-    fflush($fp);
-    flock($fp, LOCK_UN);
-    fclose($fp);
-    return true;
+function write_json($path, $data) {
+    $dir = dirname($path);
+    if (!is_dir($dir)) mkdir($dir, 0755, true);
+    $tmp = $path . '.tmp';
+    $json = json_encode($data, JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES);
+    $h = fopen($tmp, 'w');
+    if (!$h) return false;
+    flock($h, LOCK_EX);
+    fwrite($h, $json);
+    fflush($h);
+    flock($h, LOCK_UN);
+    fclose($h);
+    return rename($tmp, $path);
 }
-
-function sl_now(): string { return date('Y-m-d H:i:s'); }
-
-function sl_next_id(string $prefix, array $list, string $key='id'): string {
+function next_id($prefix, $existing, $key = 'id') {
     $max = 0;
-    foreach ($list as $it) {
-        if (!isset($it[$key])) continue;
-        if (preg_match('/^' . preg_quote($prefix,'/') . '_(\d{4,})$/', (string)$it[$key], $m)) {
-            $n = intval($m[1]);
+    foreach ($existing as $row) {
+        if (isset($row[$key]) && preg_match('/\d+$/', $row[$key], $m)) {
+            $n = intval($m[0]);
             if ($n > $max) $max = $n;
         }
     }
     return sprintf('%s_%04d', $prefix, $max + 1);
 }
 
-// Users
-function load_users(): array {
-    $path = sl_path('users.json');
-    $users = sl_read_json($path);
-    // normalize
-    foreach ($users as &$u) {
-        if (!isset($u['status'])) $u['status'] = 'active';
-        if (!isset($u['verified'])) $u['verified'] = false;
+function users_path() { return data_dir() . '/users.json'; }
+function posts_path() { return data_dir() . '/posts.json'; }
+function comments_path() { return data_dir() . '/comments.json'; }
+function likes_path() { return data_dir() . '/likes.json'; }
+function reports_path() { return data_dir() . '/reports.json'; }
+
+function follows_path() { return data_dir() . '/follows.json'; }
+function dm_threads_path() { return data_dir() . '/dm_threads.json'; }
+function dms_path() { return data_dir() . '/dms.json'; }
+
+function notifications_path() { return data_dir() . '/notifications.json'; }
+function wallets_path() { return data_dir() . '/wallets.json'; }
+function coin_ledger_path() { return data_dir() . '/coin_ledger.json'; }
+function payouts_path() { return data_dir() . '/payouts.json'; }
+
+function groups_path() { return data_dir() . '/groups.json'; }
+function group_members_path() { return data_dir() . '/group_members.json'; }
+
+function load_users() { return read_json(users_path()); }
+function save_users($users) { return write_json(users_path(), $users); }
+function load_posts() { return read_json(posts_path()); }
+function save_posts($posts) { return write_json(posts_path(), $posts); }
+function load_comments() { return read_json(comments_path()); }
+function save_comments($comments) { return write_json(comments_path(), $comments); }
+function load_likes() { return read_json(likes_path()); }
+function save_likes($likes) { return write_json(likes_path(), $likes); }
+
+function load_follows() { return read_json(follows_path()); }
+function save_follows($rows) { return write_json(follows_path(), $rows); }
+
+function load_dm_threads() { return read_json(dm_threads_path()); }
+function save_dm_threads($rows) { return write_json(dm_threads_path(), $rows); }
+function load_dms() { return read_json(dms_path()); }
+function save_dms($rows) { return write_json(dms_path(), $rows); }
+
+function load_notifications() { return read_json(notifications_path()); }
+function save_notifications($rows) { return write_json(notifications_path(), $rows); }
+
+function load_wallets() { return read_json(wallets_path()); }
+function save_wallets($rows) { return write_json(wallets_path(), $rows); }
+function load_coin_ledger() { return read_json(coin_ledger_path()); }
+function save_coin_ledger($rows) { return write_json(coin_ledger_path(), $rows); }
+function load_payouts() { return read_json(payouts_path()); }
+function save_payouts($rows) { return write_json(payouts_path(), $rows); }
+
+function load_groups() { return read_json(groups_path()); }
+function save_groups($rows) { return write_json(groups_path(), $rows); }
+function load_group_members() { return read_json(group_members_path()); }
+function save_group_members($rows) { return write_json(group_members_path(), $rows); }
+
+function find_user_by_email_or_username($list, $login) {
+    foreach ($list as $u) {
+        if (strcasecmp($u['email'] ?? '', $login) === 0 || strcasecmp($u['username'] ?? '', $login) === 0) {
+            return $u;
+        }
     }
-    unset($u);
-    return $users;
+    return null;
+}
+function get_user_by_id($list, $userId) {
+    foreach ($list as $u) if (($u['id'] ?? '') === $userId) return $u;
+    return null;
+}
+function current_user() {
+    if (!empty($_SESSION['user_id'])) {
+        $users = load_users();
+        return get_user_by_id($users, $_SESSION['user_id']);
+    }
+    return null;
+}
+function require_login_json() {
+    $u = current_user();
+    if (!$u || ($u['status'] ?? 'active') !== 'active') {
+        http_response_code(401);
+        echo json_encode(['success' => false, 'message' => 'Unauthorized']);
+        exit;
+    }
+    return $u;
 }
 
-function save_users(array $users): bool { return sl_write_json(sl_path('users.json'), $users); }
-
-// Posts
-function load_posts(): array { return sl_read_json(sl_path('posts.json')); }
-function save_posts(array $posts): bool { return sl_write_json(sl_path('posts.json'), $posts); }
-
-// Notifications
-function load_notifications(): array { return sl_read_json(sl_path('notifications.json')); }
-function save_notifications(array $list): bool { return sl_write_json(sl_path('notifications.json'), $list); }
-
-function append_warning(string $userId, string $text, string $type='warning'): bool {
-    $list = load_notifications();
-    $id = sl_next_id('n', $list);
-    $list[] = [
+// Notifications helper
+function add_notification($userId, $type, $refId, $text) {
+    $rows = load_notifications();
+    $id = next_id('n', $rows);
+    $rows[] = [
         'id' => $id,
         'userId' => $userId,
         'type' => $type,
+        'refId' => $refId,
         'text' => $text,
         'read' => false,
-        'createdAt' => sl_now()
+        'createdAt' => date('Y-m-d H:i:s')
     ];
-    return save_notifications($list);
+    save_notifications($rows);
+    return $id;
 }
 
+// Compatibility wrapper for admin warnings
+function append_warning($userId, $text, $type='warning') {
+    add_notification($userId, $type, '', $text);
+    return true;
+}
+
+// Wallet helper
+function get_wallet(&$wallets, $userId) {
+    foreach ($wallets as &$w) if (($w['userId']??'') === $userId) return $w;
+    $w = ['userId'=>$userId,'coins'=>0,'updatedAt'=>date('Y-m-d H:i:s')];
+    $wallets[] = $w;
+    return $wallets[array_key_last($wallets)];
+}
