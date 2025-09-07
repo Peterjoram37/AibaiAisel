@@ -68,7 +68,10 @@ function initAuthUI() {
     guest?.classList.add('hidden');
     menu?.classList.remove('hidden');
     document.getElementById('userNav')?.classList.remove('hidden');
-    if (name) name.textContent = currentUser.firstName ? `${currentUser.firstName} ${currentUser.lastName||''}`.trim() : (currentUser.username || 'User');
+    if (name) {
+      const displayName = currentUser.firstName ? `${currentUser.firstName} ${currentUser.lastName||''}`.trim() : (currentUser.username || 'User');
+      name.innerHTML = `${escapeHtml(displayName)}${verifiedIcon(!!currentUser.verified)}`;
+    }
   } else {
     guest?.classList.remove('hidden');
     menu?.classList.add('hidden');
@@ -198,6 +201,7 @@ async function createPost() {
       videoUrl,
       userId: currentUser.id,
       authorName: currentUser.firstName ? `${currentUser.firstName} ${currentUser.lastName||''}`.trim() : (currentUser.username || 'You'),
+      authorVerified: !!currentUser.verified,
       createdAt: new Date().toISOString(),
       likes: 0,
       likedByMe: false,
@@ -253,12 +257,13 @@ function renderPost(p) {
   const commentsCount = p.comments || 0;
   const likesCount = p.likes || 0;
   const displayName = p.authorName || p.userName || p.username || p.userId;
+  const nameWithBadge = `${escapeHtml(String(displayName))}${verifiedIcon(!!(p.authorVerified||p.verified))}`;
   const likeLabel = likesCount > 0 ? `Like (${likesCount})` : 'Like';
   const commentLabel = commentsCount > 0 ? `Comment (${commentsCount})` : 'Comment';
   return `
     <div class="bg-white border rounded-lg p-4 mb-4" id="post-${p.id}">
       <div class="flex items-center justify-between">
-        <div class="font-semibold">${escapeHtml(String(displayName))}</div>
+        <div class="font-semibold">${nameWithBadge}</div>
         <div class="flex items-center gap-2">
           ${currentUser && currentUser.id!==p.userId ? `<button onclick="followUser('${p.userId}')" class="px-2 py-1 rounded border text-sm">Follow</button>` : ''}
           <div class="text-xs text-gray-500">${new Date(p.createdAt).toLocaleString()}</div>
@@ -284,6 +289,12 @@ function renderPost(p) {
 }
 
 function escapeHtml(s){return (s||'').toString().replace(/[&<>"']/g,m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;' }[m]));}
+
+// Verified badge helper
+function verifiedIcon(isVerified){
+  if (!isVerified) return '';
+  return ' <i class="fa-solid fa-circle-check text-blue-600" aria-label="verified"></i>';
+}
 
 function toggleComments(postId){
   const box = document.getElementById('comments_'+postId);
@@ -318,9 +329,10 @@ function renderComment(postId, c){
   const likeIcon = liked ? 'fa-solid fa-thumbs-up' : 'fa-regular fa-thumbs-up';
   const likeCls = liked ? 'text-blue-600' : 'text-gray-700';
   const replies = Array.isArray(c.replies) ? c.replies : [];
+  const nameWithBadge = `${escapeHtml(c.authorName||('User '+c.userId))}${verifiedIcon(!!c.authorVerified)}`;
   return `
     <div class="border rounded p-2">
-      <div class="text-sm"><span class="font-medium">${escapeHtml(c.authorName||('User '+c.userId))}</span> <span class="text-gray-500">• ${new Date(c.createdAt||Date.now()).toLocaleString()}</span></div>
+      <div class="text-sm"><span class="font-medium">${nameWithBadge}</span> <span class="text-gray-500">• ${new Date(c.createdAt||Date.now()).toLocaleString()}</span></div>
       <div class="mt-1 text-sm whitespace-pre-wrap">${escapeHtml(c.text||'')}</div>
       <div class="mt-2 flex items-center gap-3 text-xs">
         <button onclick="likeComment('${postId}','${c.id}')" class="px-2 py-0.5 rounded border flex items-center gap-1 ${likeCls}"><i class="${likeIcon}"></i><span>${c.likes||0}</span></button>
@@ -340,9 +352,10 @@ function renderComment(postId, c){
 }
 
 function renderReply(r){
+  const nameWithBadge = `${escapeHtml(r.authorName||('User '+r.userId))}${verifiedIcon(!!r.authorVerified)}`;
   return `
     <div class="text-sm">
-      <span class="font-medium">${escapeHtml(r.authorName||('User '+r.userId))}</span>
+      <span class="font-medium">${nameWithBadge}</span>
       <span class="text-gray-500">• ${new Date(r.createdAt||Date.now()).toLocaleString()}</span>
       <div class="mt-0.5 whitespace-pre-wrap">${escapeHtml(r.text||'')}</div>
     </div>
