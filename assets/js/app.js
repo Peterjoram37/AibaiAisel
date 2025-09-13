@@ -292,6 +292,7 @@ function renderPost(p) {
   const commentsCount = p.comments || 0;
   const likesCount = p.likes || 0;
   const displayName = p.authorName || p.userName || p.username || p.userId;
+  const username = p.username || p.userId; // Use username for profile link
   const nameWithBadge = `${escapeHtml(String(displayName))}${verifiedIcon(!!(p.authorVerified||p.verified))}`;
   
   // Like/Dislike button with icons
@@ -304,7 +305,9 @@ function renderPost(p) {
       <div class="flex items-center mb-3">
         <img src="https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=4C1D95&color=fff&size=32" class="w-8 h-8 rounded-full mr-3">
         <div>
-          <div class="font-semibold text-gray-900">${nameWithBadge}</div>
+          <div class="font-semibold text-gray-900">
+            <a href="profile.php?user=${encodeURIComponent(username)}" class="hover:text-purple-600">${nameWithBadge}</a>
+          </div>
           <div class="text-sm text-gray-500">${formatTime(p.createdAt)}</div>
         </div>
       </div>
